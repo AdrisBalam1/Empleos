@@ -1,9 +1,20 @@
 package net.itinajero.model;
 
 import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="Vacantes")
 public class Vacante {
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String nombre;
 	private String descripcion;
@@ -13,6 +24,16 @@ public class Vacante {
 	private String imagen="no-image.png";
 	private String estatus;
 	private String detalles;
+	
+	// con este atributo vamos a vincular una vacante con una categoria
+	// esta anotación hace que spring ignore el atributo a la hora de mapear
+	// @Transient
+	
+	// esta es la notacion donde se marca la relacion 1:1 entre vacante y categoria
+	@OneToOne
+	
+	// con esta anotacion se especifica la columna en la que se marca la relacion de tablas
+	@JoinColumn(name="idCategoria")
 	private Categoria categoria;
 
 	public Integer getId() {
@@ -100,6 +121,11 @@ public class Vacante {
 
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
+	}
+	
+	public void reset() {
+		
+		this.imagen=null;
 	}
 
 	@Override

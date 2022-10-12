@@ -27,19 +27,27 @@
         <div class="card">
           <h4 class="card-header"><strong>Datos de la oferta de trabajo</strong></h4>              
           <div class="card-body">
-            <form th:action="@{/vacantes/save}" method="post" th:object="${vacante}">  
+          <!-- Usamos el th:object para vincular el html con el modelo -->
+            <form th:action="@{/vacantes/save}" method="post" th:object="${vacante}" enctype="multipart/form-data">  
              
+             <!-- se utiliza un condicional if para preguntar si hay errores -->
               <div th:if="${#fields.hasErrors('*')}"class='alert alert-danger' role='alert'>
 				Por favor corrija los siguientes errores:
 				<ul>
+				<!-- en caso de que se cumpla la condicion se ejecuta la siguiente linea mostrando los errores -->
 				<li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>
 				</ul>
-			  </div>	
+			  </div>
                        
               <div class="row">
                 <div class="col-md-3"> 
                   <div class="form-group">
                     <label for="nombre">Nombre</label>
+                    <!-- cuando se redenderice el formulario se va a tomar en cuenta el id de la vacante que se esta editando -->
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{imagen}">
+                    
+                    <!--  se usa th:field para vincular el la propiedad "nombre" del objeto vacante con el input -->
                     <input type="text" class="form-control" th:field="*{nombre}" id="nombre" name="nombre" placeholder="Titulo de la oferta de trabajo" required="required">
                   </div>
                 </div>
@@ -54,7 +62,12 @@
                 <div class="col-md-3"> 
                   <div class="form-group">
                     <label for="categoria">Categoría</label>
+                    
+                    <!-- usamos el th:field para vincular el atributo id de categoria al formulario -->
                     <select class="form-control" th:field="*{categoria.id}">
+                      <!-- usamos th:each para que se muestre el listado de categorias -->
+                      <!-- el th:value nos va a mostrar la categoria de acuerdo a su id -->
+                      <!-- el th:text nos va a devolver el nombre de la categoria -->
                       <option th:each="categoria : ${categorias}" 
 		                      th:value="${categoria.id}" 
 		                      th:text="${categoria.nombre}"></option>                     
@@ -114,7 +127,7 @@
                 </div> 
                 <div class="col-md-3">
                   <label for="imagen">Imagen/Logo</label>
-                  <img class="rounded mx-auto d-block" src="images/construccion-logo.png" alt="Generic placeholder image" width="200" height="200">            
+                  <img class="rounded mx-auto d-block" th:src="@{/logos/{img} (img=${vacante.imagen}) }" alt="Generic placeholder image" width="200" height="200">            
                 </div>
               </div> 
               <button type="submit" class="btn btn-primary">Guardar</button>  
@@ -135,7 +148,8 @@
 	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>     
     <script th:src="@{/tinymce/tinymce.min.js}"></script>
     <script>
-      
+     
+    /* Aquí hacemos uso del plugin para modificar el textarea */
       $(function () {
           $("#fecha").datepicker({dateFormat: 'dd-mm-yy'});
         }
@@ -147,7 +161,7 @@
           toolbar: " undo redo | bold italic | alignleft aligncenter alignright alignjustify \n\
                     | bullist numlist outdent indent | forecolor backcolor table code"
       });
-      
+
     </script>
   </body>
 </html>
